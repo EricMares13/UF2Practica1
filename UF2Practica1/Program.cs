@@ -12,17 +12,19 @@ namespace UF2Practica1
 		//Valors constants
 		#region Constants
 		const int nCaixeres = 3;
+        const int totalCaixeres = 3;
 
 		#endregion
 		/* Cua concurrent
 		 	Dos mètodes bàsics: 
-		 		Cua.Enqueue per afegir a la cua
+		 		Cua.En queue per afegir a la cua
 		 		bool success = Cua.TryDequeue(out clientActual) per extreure de la cua i posar a clientActual
 		*/
 
 		public static ConcurrentQueue<Client> cua = new ConcurrentQueue<Client>();
+        
 
-		public static void Main(string[] args)
+        public static void Main(string[] args)
 		{
 			var clock = new Stopwatch();
 			var threads = new List<Thread>();
@@ -58,7 +60,14 @@ namespace UF2Practica1
 
 			// Instanciar les caixeres i afegir el thread creat a la llista de threads
 
+            for(int i =1; i <= totalCaixeres; i++)
+            {
+                var caixera = new Caixera(i);
+                var thread = new Thread(() => caixera.ProcessarCua());
 
+                thread.Start();
+                threads.Add(thread);
+            }
 
 
 			// Procediment per esperar que acabin tots els threads abans d'acabar
@@ -82,11 +91,21 @@ namespace UF2Practica1
 			set;
 		}
 
+        public Caixera (int id)
+        {
+            idCaixera = idCaixera+1;
+        }
 		public void ProcessarCua()
 		{
-			// Llegirem la cua extreient l'element
-			// cridem al mètode ProcesarCompra passant-li el client
+            Client client = new Client();
 
+            // Llegirem la cua extreient l'element
+            // cridem al mètode ProcesarCompra passant-li el client
+
+            while (MainClass.cua.TryDequeue(out client))
+            {
+                ProcesarCompra(client);
+            }
 
 
 		}
