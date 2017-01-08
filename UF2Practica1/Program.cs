@@ -93,7 +93,7 @@ namespace UF2Practica1
 
         public Caixera (int id)
         {
-            idCaixera = idCaixera+1;
+            idCaixera = id+1;
         }
 		public void ProcessarCua()
 		{
